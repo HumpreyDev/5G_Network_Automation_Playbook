@@ -1,0 +1,71 @@
+---
+
+- name : Add UDH repository to apt
+  apt_repository:
+    repo: "ppa:ettusresearch/uhd"
+    state: present
+  become: true
+
+- name : update apt cache
+  apt:
+    update_cache: yes
+  become: true
+
+- name: Update Distribution
+  apt:
+    upgrade: dist
+  become: true
+
+- name: Install Lib-UHD and dependencies
+  apt:
+    pkg:
+      - uhd-host
+      - libuhd-dev
+      - libuhd4.8.0 
+  become: true
+
+- name: Install UHD FPGA images
+  command: uhd_images_downloader
+  register: uhd_images_download
+  become: true
+
+- name: Display UHD images downloader output
+  debug:
+    msg: "UHD images downloader output: {{ uhd_images_download.stdout }}"
+  when: uhd_images_download is defined and uhd_images_download.stdout is defined
+
+
+- name: Update Kernel header
+  shell: sudo touch /usr/src/linux-headers-$(uname -r)/include/config/modversions.h
+  register: kernel_header_update
+  become: true
+
+- name: Copy and install NI software local .deb packages from Downloads directory
+  apt:
+    deb: /home/{{ansible_user}}/Downloads/NILinux2024Q4DeviceDrivers/ni-ubuntu2404-drivers-2024Q4.deb
+    state: present
+  become: true
+
+- name : update apt cache
+  apt:
+    update_cache: yes
+  become: true
+
+
+- name: Install NI USRP RIO drivers
+  apt:
+    pkg: ni-usrp-rio
+  become: true
+
+
+- name: Reboot the host to apply changes
+  reboot:
+    msg: "Turn USRP device now. Rebooting the host to apply changes after installing UHD and NI USRP RIO drivers. "
+    reboot_timeout: 600
+  ignore_errors: no
+  become: true
+
+
+
+
+

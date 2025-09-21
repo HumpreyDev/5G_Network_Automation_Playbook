@@ -1,0 +1,6 @@
+---
+
+- name: Install and Test UHD USRP on Remote RAN host
+  hosts: all
+  roles:
+    - role: uhd_usrp

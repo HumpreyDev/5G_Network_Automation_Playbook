@@ -1,0 +1,12 @@
+---
+
+- name : Run OIA gNB on Remote Hosts
+  hosts: all
+  become: true
+  roles:
+    - role: 5g/ran
+
+      vars:
+        oai_installation: true
+
+

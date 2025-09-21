@@ -1,0 +1,14 @@
+---
+
+- name: Install MicroK8s
+  snap:
+    name: microk8s
+    state: absent
+    classic: true
+
+- name: Install Kubectl command line tool
+  snap:
+    name: kubectl
+    state: absent
+    classic: true
+

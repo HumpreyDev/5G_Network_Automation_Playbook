@@ -1,0 +1,18 @@
+--- 
+
+- name: include OAI 5G installation tasks
+  include_tasks: install-oai.yaml
+  when: oai_installation | default(false)
+
+- name: include OAI 5G running tasks
+  include_tasks: run-oai.yaml
+  when: oai_run | default(false)
+
+- name: include OAI 5G clean up include_tasks
+  include_tasks: cleanup-oai.yaml
+  when: oai_clean | default(false)
+
+
+
+
+  

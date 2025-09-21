@@ -1,0 +1,17 @@
+---
+
+- name: "Run CPU and Network perfomance enhancement script on host "
+  script: "{{ playbook_dir }}/bash_scripts/perfomance_script.sh"
+  register: script_output
+
+
+- name: "Display CPU and Network performance script output"
+  debug:
+    msg: "CPU and Network performance script output: {{ script_output.stdout }}"
+  when: script_output is defined and script_output.stdout is defined
+
+
+- name: Run OAI with USRP on X300
+  shell: sudo ./nr-softmodem -O  /home/{{ansible_user}}/openairinterface5g/targets/PROJECTS/GENERIC-NR-5GC/CONF/gnb0.prs.band78.fr1.106PRB.usrpx310.conf --usrp-tx-thread-config 1 -E --continuous-tx
+  args:
+    chdir: /home/{{ansible_user}}/openairinterface5g/cmake_targets/ran_build/build

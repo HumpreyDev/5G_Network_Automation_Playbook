@@ -1,0 +1,6 @@
+---
+
+- name: Test Ansible Playbook
+  hosts: all
+  roles:
+    - role: test

@@ -1,0 +1,40 @@
+---
+
+- name: Install git 
+  apt:
+    name: git
+    state: present
+    update_cache: yes
+
+
+- name: Create 5G oai 5G core UCT namespace
+  kubernetes.core.k8s:
+    name: oai-5g-core-uct
+    api_version: v1
+    kind: Namespace
+    kubeconfig: /home/{{ansible_user}}/.kube/config
+    state: present
+
+- name: Clone OAI 5G core repository
+  git:
+    repo: https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+    dest: "/home/{{ansible_user}}/oai-5g"
+    version: master
+    update: no
+
+- name: Switch to OAI 5G core basic helm chart and install 5G core basic using helm charts
+  kubernetes.core.helm:
+    name: oai-5g-core-basic
+    kubeconfig: /home/{{ansible_user}}/.kube/config
+    chart_ref: "/home/{{ansible_user}}/oai-5g/charts/oai-5g-core/oai-5g-basic"
+    namespace: oai-5g-core-uct
+    dependency_update: true
+    state: absent
+    wait: true
+
+  
+    
+
+
+
+

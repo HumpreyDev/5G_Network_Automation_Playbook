@@ -1,0 +1,30 @@
+---
+
+- name: Remove open5gs
+  apt:
+    name: open5gs
+    state: absent
+    purge: true
+  become: true
+
+
+- name: Autoremove unused packages
+  apt:
+    autoremove: true
+    purge: true
+  become: true
+
+
+- name: Remove open5gs log files
+  file:
+    path: /var/log/open5gs
+    state: absent
+  become: true
+
+
+- name: Remove WebUI 
+  shell: "curl -fsSL https://open5gs.org/open5gs/assets/webui/uninstall | sudo -E bash -"
+  become: true
+
+
+  

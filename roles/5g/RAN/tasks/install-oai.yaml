@@ -1,0 +1,69 @@
+---
+
+- name: Install OAI and UHD dependencies. Just in case some were missed during the standalone UHD installation.
+  apt:
+    pkg:
+      - autoconf
+      - automake
+      - build-essential
+      - ccache
+      - cmake
+      - cpufrequtils
+      - git
+      - doxygen
+      - ethtool
+      - g++ 
+      - git
+      - inetutils-tools 
+      - libboost-all-dev 
+      - libncurses-dev 
+      - libusb-1.0-0 
+      - libusb-1.0-0-dev 
+      - libusb-dev 
+      - python3-dev 
+      - python3-mako 
+      - python3-numpy 
+      - python3-requests 
+      - python3-scipy 
+      - python3-setuptools 
+      - python3-ruamel.yaml
+
+- name: Get OAI source code
+  git:
+    repo: https://gitlab.eurecom.fr/oai/openairinterface5g.git
+    dest: /home/{{ ansible_user }}/openairinterface5g
+
+- name: Check out in to develop branch
+  command: git checkout develop
+  args:
+    chdir: /home/{{ ansible_user }}/openairinterface5g
+  register: git_checkout
+
+- name: Display git checkout output
+  debug:
+    msg: "Git checkout output: {{ git_checkout.stdout }}"
+  when: git_checkout is defined and git_checkout.stdout is defined
+
+- name: Install OAI dependencies
+  command: ./build_oai -I
+  args:
+    chdir: /home/{{ ansible_user }}/openairinterface5g/cmake_targets
+  register: oai_installation
+
+- name: Display OAI dependencies installation output
+  debug:
+    msg: "OAI dependencies installation output: {{ oai_installation.stdout }}"
+  when: oai_installation is defined and oai_installation.stdout is defined
+
+- name: Build OAI
+  command: ./build_oai -w USRP --ninja --gNB -C
+  args:
+    chdir: /home/{{ ansible_user }}/openairinterface5g/cmake_targets
+  register: oai_build
+
+- name: Display OAI build output
+  debug:
+    msg: "OAI build output: {{ oai_build.stdout }}"
+  when: oai_build is defined and oai_build.stdout is defined
+
+
